@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>To-Do List</title>
+</head>
+<body>
+    <h1 id="app-title">To-Do List App</h1>
+    <div class="app">
+        <div class="container">
+            <div id="wrapper">
+                <input type="text" placeholder="Enter your task">
+                <button id="add-btn">Submit</button>
+            </div>
+            <div id="tasks">
+                <p id="pending-tasks">
+                    You have <span class="count-value">0</span> tasks to complete
+                </p>
+            </div>
+        </div>
+        <p id="error">Input cannot be empty!</p>
+    </div>
+    <p id="developer">Developed by Zafir</p>
+    
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to delete this task?</p>
+            <button id="confirm-delete" class="modal-btn confirm-btn">Yes</button>
+            <button id="cancel-delete" class="modal-btn cancel-btn">No</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
