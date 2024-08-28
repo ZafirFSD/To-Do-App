@@ -11,7 +11,40 @@ let taskToDelete = null;
 
 const displayCount = (count) => {
     countValue.innerText = count;
-}
+};
+
+const saveTasksToLocalStorage = () => {
+    const tasks = [];
+    document.querySelectorAll(".task").forEach(taskElement => {
+        const taskName = taskElement.querySelector(".taskname").innerText;
+        const isChecked = taskElement.querySelector(".task-check").checked;
+        tasks.push({ name: taskName, completed: isChecked });
+    });
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
+const loadTasksFromLocalStorage = () => {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.forEach(task => {
+        const taskHTML = `
+            <div class="task">
+                <input type="checkbox" class="task-check" ${task.completed ? "checked" : ""}>
+                <span class="taskname ${task.completed ? "completed" : ""}">${task.name}</span>
+                <button class="edit">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="delete">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        `;
+        taskContainer.insertAdjacentHTML("beforeend", taskHTML);
+        if (!task.completed) taskCount++;
+    });
+    displayCount(taskCount);
+
+    addEventListenersToTasks();
+};
 
 const addTask = () => {
     const taskName = newTaskInput.value.trim();
@@ -27,7 +60,7 @@ const addTask = () => {
     const taskHTML = `
         <div class="task">
             <input type="checkbox" class="task-check">
-            <span class="taskname">${taskName}</span> 
+            <span class="taskname">${taskName}</span>
             <button class="edit">
                 <i class="fa-solid fa-pen-to-square"></i>
             </button>
@@ -39,11 +72,20 @@ const addTask = () => {
 
     taskContainer.insertAdjacentHTML("beforeend", taskHTML);
 
+    taskCount++;
+    displayCount(taskCount);
+    saveTasksToLocalStorage();
+    newTaskInput.value = "";
+
+    addEventListenersToTasks();
+};
+
+const addEventListenersToTasks = () => {
     document.querySelectorAll(".delete").forEach(button => {
         button.onclick = () => {
             taskToDelete = button.parentNode;
             modal.style.display = 'flex';
-        }
+        };
     });
 
     document.querySelectorAll(".edit").forEach(button => {
@@ -54,6 +96,7 @@ const addTask = () => {
                 taskElement.remove();
                 taskCount--;
                 displayCount(taskCount);
+                saveTasksToLocalStorage();
             }
         };
     });
@@ -63,12 +106,9 @@ const addTask = () => {
             checkbox.nextElementSibling.classList.toggle("completed");
             taskCount += checkbox.checked ? -1 : 1;
             displayCount(taskCount);
+            saveTasksToLocalStorage();
         };
     });
-
-    taskCount++;
-    displayCount(taskCount);
-    newTaskInput.value = "";
 };
 
 confirmDeleteButton.addEventListener('click', () => {
@@ -78,6 +118,7 @@ confirmDeleteButton.addEventListener('click', () => {
             displayCount(taskCount);
         }
         taskToDelete.remove();
+        saveTasksToLocalStorage();
         taskToDelete = null;
     }
     modal.style.display = 'none';
@@ -92,13 +133,12 @@ addButton.addEventListener("click", addTask);
 
 newTaskInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
-        e.preventDefault(); 
+        e.preventDefault();
         addTask();
     }
 });
 
 window.onload = () => {
-    taskCount = 0;
-    displayCount(taskCount);
+    loadTasksFromLocalStorage();
     newTaskInput.value = "";
-}
+};
